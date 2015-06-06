@@ -147,6 +147,24 @@
 		order_id varchar(40),
 		constraint order_id_FK foreign key(order_id) references orders(id)
 	);	
+	
+	create table privilege
+	(
+		id varchar(40) primary key,
+		name varchar(40),
+		description varchar(255)
+	);
+	
+	create table user_privilege
+	(
+		user_id varchar(40),
+		privilege_id varchar(40),
+		primary key(user_id,privilege_id),
+		constraint user_id_FK1 foreign key(user_id) references user(id),
+		constraint privilege_id_FK foreign key(privilege_id) references privilege(id)
+	);
+	
+	
 
 4.дdao
 

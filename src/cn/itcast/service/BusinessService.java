@@ -50,6 +50,8 @@ public interface BusinessService {
 	public abstract User findUser(String id);
 
 	public abstract User findUser(String username, String password);
+	
+	public abstract List getUserAllPrivilege(User user);
 
 	/********************************
 	 * 
@@ -79,5 +81,7 @@ public interface BusinessService {
 	public List<Dbbak> getAllDbbak();
 	
 	public Dbbak findDbbak(String id);
+
+	
 	
 }

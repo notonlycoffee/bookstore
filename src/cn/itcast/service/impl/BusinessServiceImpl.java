@@ -25,6 +25,7 @@ import cn.itcast.domain.QueryResult;
 import cn.itcast.domain.User;
 import cn.itcast.factory.DaoFactory;
 import cn.itcast.service.BusinessService;
+import cn.itcast.utils.Permission;
 
 public class BusinessServiceImpl implements BusinessService {
 
@@ -40,6 +41,7 @@ public class BusinessServiceImpl implements BusinessService {
 	 * @see cn.itcast.service.impl.BusinessService#addCategory(cn.itcast.domain.Category)
 	 */
 	
+	@Permission("添加分类")
 	@Override
 	public void addCategory(Category c) {
 		cdao.add(c);
@@ -56,6 +58,7 @@ public class BusinessServiceImpl implements BusinessService {
 	/* (non-Javadoc)
 	 * @see cn.itcast.service.impl.BusinessService#getAllCategory()
 	 */
+	@Permission("查看分类")
 	@Override
 	public List<Category> getAllCategory() {
 		return cdao.getAll();
@@ -198,6 +201,11 @@ public class BusinessServiceImpl implements BusinessService {
 	
 	public Dbbak findDbbak(String id) {
 		return ddao.find(id);
+	}
+
+	@Override
+	public List getUserAllPrivilege(User user) {
+		return udao.getAllPrivilege(user);
 	}
 	  
 }

@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.itcast.domain.Category;
+import cn.itcast.domain.User;
+import cn.itcast.factory.ServiceFactory;
+import cn.itcast.service.BusinessService;
 import cn.itcast.service.impl.BusinessServiceImpl;
 import cn.itcast.utils.WebUtils;
 
 public class CategoryServlet extends HttpServlet {
 
-	private BusinessServiceImpl service = new BusinessServiceImpl();
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
@@ -30,24 +33,32 @@ public class CategoryServlet extends HttpServlet {
 	}
 
 	private void getAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		BusinessService service = ServiceFactory.getInstance().createService((User) request.getSession().getAttribute("user"));
 		try {
-			List list = service.getAllCategory();
+			List list = service.getAllCategory();  //---->invoke(throw SecurityException)
 			request.setAttribute("list", list);
 			request.getRequestDispatcher("/manager/listcategory.jsp").forward(request, response);
-		} catch(Exception e) {
-			throw new RuntimeException(e);
+		} catch(SecurityException e) {
+			request.setAttribute("message", e.getMessage());
+			request.getRequestDispatcher("/message.jsp").forward(request, response);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
 		}
 	}
 
 	private void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		BusinessService service = ServiceFactory.getInstance().createService((User) request.getSession().getAttribute("user"));
 		try {
 			Category c = WebUtils.request2bean(request, Category.class);
 			c.setId(UUID.randomUUID().toString());
 			service.addCategory(c);
 			request.setAttribute("message", "添加成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("message", "添加失败");
+		} catch (SecurityException e) {
+				request.setAttribute("message", e.getMessage());
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
 		}
 		request.getRequestDispatcher("/message.jsp").forward(request, response);
 	}

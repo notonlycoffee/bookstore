@@ -1,11 +1,14 @@
 package cn.itcast.dao.impl;
 
 import java.sql.Connection;
+import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import cn.itcast.dao.UserDao;
+import cn.itcast.domain.Privilege;
 import cn.itcast.domain.User;
 import cn.itcast.utils.JdbcUtils;
 
@@ -53,6 +56,17 @@ public class UserDaoImpl implements UserDao {
 			String sql = "select * from user where username=? and password=?";
 			Object params [] = {username, password};
 			return (User) runner.query(conn, sql, params, new BeanHandler(User.class));
+		} catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Privilege> getAllPrivilege(User user) {
+		try {
+			Connection conn = JdbcUtils.getConnection();
+			QueryRunner runner = new QueryRunner(JdbcUtils.getDataSource());
+			String sql = "select p.* from user_privilege up,privilege p where up.user_id=? and up.privilege_id=p.id";
+			return (List<Privilege>) runner.query(conn, sql, user.getId(), new BeanListHandler(Privilege.class));
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		}
